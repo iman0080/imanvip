@@ -1,0 +1,84 @@
+{                                                            "route": {
+                "geoip": {                                           "path": "geo-assets\\sagernet-sing-geoip-geoip.db"                                                        },
+                "geosite": {                                         "path": "geo-assets\\sagernet-sing-geosite-geosite.db"                                                    },
+                "rules": [                                           {
+                        "inbound": "dns-in",                                 "outbound": "dns-out"
+                },                                                   {
+                        "port": 53,                                          "outbound": "dns-out"
+                },                                                   {
+                        "clash_mode": "Direct",                              "outbound": "direct"
+                },                                                   {
+                        "clash_mode": "Global",                              "outbound": "select"
+                }                                                    ],
+                "auto_detect_interface": true,                       "override_android_vpn": true
+        },
+        "outbounds": [
+                {
+                "type": "selector",
+                "tag": "select",
+                "outbounds": [
+                        "auto",
+                        "IP->Iran, kolandone",
+                        "IP->Main, kolandone"
+                ],
+                "default": "auto"
+                },
+                {
+                "type": "urltest",
+                "tag": "auto",
+                "outbounds": [
+                        "IP->Iran, kolandone",
+                        "IP->Main, kolandone"
+                ],
+                "url": "http://cp.cloudflare.com/",
+                "interval": "10m0s"
+                },
+                {
+                "type": "wireguard",
+                "tag": "IP->Iran, kolandone",
+                "local_address": [
+                        "172.16.0.2/32",
+                        "2606:4700:110:8eda:971f:46bf:8dd1:8845/128"
+                ],
+                "private_key": "sBdt/Tt7VzPABLiB7r8xGg0Lask7BAp/nHPT8oCqGkw=",
+                "server": "162.159.195.232",
+                "server_port": 7281,
+                "peer_public_key": "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
+                "reserved": [80,196,201],
+                "mtu": 1280,
+                "fake_packets": "5-10"
+                },
+                {
+                "type": "wireguard",
+                "tag": "IP->Main, kolandone",
+                "detour": "IP->Iran, kolandone",
+                "local_address": [
+                        "172.16.0.2/32",
+                        "2606:4700:110:809a:e945:dce9:93ed:6a97/128"
+                ],
+                "private_key": "aOwZNLeKuIUJ3mbz7+Hz2fuUnCSa17gTkYjTSfl/Kmo=",
+                "server": "162.159.195.232",
+                "server_port": 7281,
+                "peer_public_key": "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
+                "reserved": [108,172,83],
+                "mtu": 1280,
+                "fake_packets": "5-10"
+                },
+                {
+                "type": "dns",
+                "tag": "dns-out"
+                },
+                {
+                "type": "direct",
+                "tag": "direct"
+                },
+                {
+                "type": "direct",
+                "tag": "bypass"
+                },
+                {
+                "type": "block",
+                "tag": "block"
+                }
+        ]
+        }
